@@ -12,6 +12,10 @@
 // A gap buffer is not ideal for using multiple cursors, as that would involve
 // multiple jumps and copying of data in the gap buffer.
 //
+// This gap buffer includes line movements (up and down a line from the current
+// one) but it splits lines based on the newline character '\n'. So
+// Windows-style CR LF (`\r\n`) line endings are not supported.
+//
 // A gap buffer is an array with a gap at the cursor position, where text is to
 // be inserted and deleted.
 //
@@ -83,8 +87,10 @@ const (
 	// 1/10th of the capacity of the gap buffer, default: 102.
 	lineCapFactor = 10
 
-	// Default size in int of the line buffer `GapBuffer.lines`.
-	defaultLineCap = 10
+	// Minimum size in int of the line buffer `GapBuffer.lines`. A lineBuffer
+	// has at least this size, even if the [lineCapFactor] would yield a smaller
+	// one.
+	minLineCap = 10
 
 	// The factor by which to grow the gap buffer and line buffer, if needed.
 	growFactor = 2
@@ -214,7 +220,7 @@ func (g *GapBuffer) RuneCol() int {
 // See also [GapBuffer.Col], [GapBuffer.RuneCol], which is the the length to the
 // left of the cursor.
 func (g *GapBuffer) LineLength() int {
-	return g.lines.curLineLength()
+	return g.lines.curLineLength() + 1
 }
 
 // Return the line number of the current line the cursor is in.
@@ -262,7 +268,7 @@ func (g *GapBuffer) LeftDel() {
 	if r == '\n' {
 		g.lines.upDel()
 	} else {
-		g.lines.del()
+		g.lines.del(d)
 	}
 
 	g.wantsCol = g.RuneCol()
@@ -283,7 +289,7 @@ func (g *GapBuffer) RightDel() {
 	if r == '\n' {
 		g.lines.downDel()
 	} else {
-		g.lines.del()
+		g.lines.del(d)
 	}
 }
 
@@ -418,7 +424,7 @@ func (g *GapBuffer) DownMv() {
 	}
 
 	newLine := g.lines.curLineEnd() + 1 - g.start
-	if g.lines.curLineLength() == 0 || g.lines.lastLine() {
+	if g.lines.curLineLength() == 0 || g.lines.isLastLine() {
 		newLine--
 	}
 

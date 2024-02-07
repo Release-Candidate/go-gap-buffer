@@ -17,123 +17,113 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var curLineTests = []struct { //nolint:gochecknoglobals // not a global
-	name          string
-	lines         lineBuffer
-	expectedStart int
-	expectedEnd   int
-}{
-	{
-		name: "all 2s",
-		lines: lineBuffer{
-			start:   8,
-			end:     10,
-			lengths: []int{2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-		},
-		expectedStart: 8 * 2,
-		expectedEnd:   8*2 + 1,
-	},
-	{
-		name: "ascending",
-		lines: lineBuffer{
-			start:   8,
-			end:     10,
-			lengths: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 0},
-		},
-		expectedStart: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8,
-		expectedEnd:   1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 8,
-	},
-}
-
-func TestCurLineStart(t *testing.T) {
+func TestCurLineStartEndAscending(t *testing.T) {
 	t.Parallel()
 
-	for i := range curLineTests {
-		tStrct := &curLineTests[i]
-		t.Run(tStrct.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tStrct.expectedStart, tStrct.lines.curLineStart(), "Error in curLineStart!")
-			assert.Equal(t, tStrct.expectedEnd, tStrct.lines.curLineEnd(), "Error in curLineEnd!")
-		})
+	lines := lineBuffer{
+		start:   8,
+		end:     10,
+		lengths: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 0},
 	}
+	s := lines.curLineStart()
+	e := lines.curLineEnd()
+
+	assert.Equal(t, 1+2+3+4+5+6+7+8, s, "Start")
+	assert.Equal(t, 1+2+3+4+5+6+7+8+8, e, "End")
 }
 
-var lineInsertTests = []struct { //nolint:gochecknoglobals // not a global
-	name      string
-	startText string
-	text      string
-	insertPos int
-	expected  lineBuffer
-}{
-	{
-		name:      "empty add newlines",
-		startText: "",
-		text:      "12\n12\n12\n12",
-		insertPos: 0,
-		expected: lineBuffer{
-			start:   3,
-			end:     10,
-			lengths: []int{3, 3, 3, 2, 0, 0, 0, 0, 0, 0},
-		},
-	},
-	{
-		name:      "all 2s",
-		startText: "12\n12\n12\n12\n12\n12\n12\n12\n12",
-		text:      "34567890",
-		insertPos: 26,
-		expected: lineBuffer{
-			start:   8,
-			end:     10,
-			lengths: []int{3, 3, 3, 3, 3, 3, 3, 3, 10, 0},
-		},
-	},
-	{
-		name:      "add with newlines",
-		startText: "12\n12\n12\n12",
-		text:      "12\n12\n12\n12\n12",
-		insertPos: 11,
-		expected: lineBuffer{
-			start:   7,
-			end:     10,
-			lengths: []int{3, 3, 3, 5, 3, 3, 3, 2, 0, 0},
-		},
-	},
-	{
-		name:      "resize array",
-		startText: "12\n12\n12\n12\n12\n12\n12",
-		text:      "12\n12\n12\n12\n12\n12\n12\n12",
-		insertPos: 20,
-		expected: lineBuffer{
-			start:   13,
-			end:     20,
-			lengths: []int{3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0},
-		},
-	},
-	{
-		name:      "insert newline",
-		startText: "12\n12",
-		text:      "\n",
-		insertPos: 5,
-		expected: lineBuffer{
-			start:   2,
-			end:     10,
-			lengths: []int{3, 3, 0, 0, 0, 0, 0, 0, 0, 0},
-		},
-	},
-}
-
-func TestLineInsert(t *testing.T) {
+func TestCurLineStartEndAll2s(t *testing.T) {
 	t.Parallel()
 
-	for i := range lineInsertTests {
-		tStrct := &lineInsertTests[i]
-		lb := newLineBufStr(tStrct.startText, 10)
-		lb.insert(tStrct.text, tStrct.insertPos)
-		t.Run(tStrct.name, func(t *testing.T) {
-			t.Parallel()
-			assert.Equal(t, tStrct.expected, *lb)
-		})
+	lines := lineBuffer{
+		start:   8,
+		end:     10,
+		lengths: []int{2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
 	}
+	s := lines.curLineStart()
+	e := lines.curLineEnd()
+
+	assert.Equal(t, 8*2, s, "Start")
+	assert.Equal(t, 8*2+1, e, "End")
+}
+
+func TestCurLineStartEndAll2s0(t *testing.T) {
+	t.Parallel()
+
+	lines := lineBuffer{
+		start:   9,
+		end:     10,
+		lengths: []int{2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
+	}
+	s := lines.curLineStart()
+	e := lines.curLineEnd()
+
+	assert.Equal(t, 9*2, s, "Start")
+	assert.Equal(t, 9*2, e, "End")
+}
+
+func TestLineNew3332(t *testing.T) {
+	t.Parallel()
+
+	e := lineBuffer{
+		start:   3,
+		end:     10,
+		lengths: []int{3, 3, 3, 2, 0, 0, 0, 0, 0, 0},
+	}
+	lb := newLineBufStr("12\n12\n12\n12", 10)
+	assert.Equal(t, e, *lb)
+}
+
+func TestLineInsert33310(t *testing.T) {
+	t.Parallel()
+
+	e := lineBuffer{
+		start:   8,
+		end:     10,
+		lengths: []int{3, 3, 3, 3, 3, 3, 3, 3, 10, 0},
+	}
+	lb := newLineBufStr("12\n12\n12\n12\n12\n12\n12\n12\n12", 20)
+	lb.insert("34567890", 26)
+	assert.Equal(t, e, *lb)
+}
+
+func TestLineInsert33532(t *testing.T) {
+	t.Parallel()
+
+	e := lineBuffer{
+		start:   7,
+		end:     10,
+		lengths: []int{3, 3, 3, 5, 3, 3, 3, 2, 0, 0},
+	}
+	lb := newLineBufStr("12\n12\n12\n12", 20)
+	lb.insert("12\n12\n12\n12\n12", 11)
+	assert.Equal(t, e, *lb)
+}
+
+func TestLineInsert333353332(t *testing.T) {
+	t.Parallel()
+
+	e := lineBuffer{
+		start:   13,
+		end:     20,
+		lengths: []int{3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0},
+	}
+	lb := newLineBufStr("12\n12\n12\n12", 20)
+	lb.insert("12\n12\n12\n12\n12\n12\n12\n12", 20)
+	assert.Equal(t, e, *lb)
+}
+
+func TestLineInsertNewline(t *testing.T) {
+	t.Parallel()
+
+	e := lineBuffer{
+		start:   2,
+		end:     10,
+		lengths: []int{3, 3, 0, 0, 0, 0, 0, 0, 0, 0},
+	}
+	lb := newLineBufStr("12\n12", 20)
+	lb.insert("\n", 5)
+	assert.Equal(t, e, *lb)
 }
 
 func TestLineInsertSpecial(t *testing.T) {
