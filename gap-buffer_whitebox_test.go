@@ -7,6 +7,8 @@
 //
 // =============================================================================
 
+// White-box testing of the gap buffer library, using the internal
+// representation of both the text gap buffer and the line lengths gap buffer.
 package gapbuffer //nolint:testpackage // I want to white-box test this
 
 import (
@@ -129,9 +131,24 @@ func TestLineInsert(t *testing.T) {
 		lb.insert(tStrct.text, tStrct.insertPos)
 		t.Run(tStrct.name, func(t *testing.T) {
 			t.Parallel()
-			assert.Equal(t, tStrct.expected, *lb, "Error in curLineStart!")
+			assert.Equal(t, tStrct.expected, *lb)
 		})
 	}
+}
+
+func TestLineInsertSpecial(t *testing.T) {
+	t.Parallel()
+
+	lb := newLineBufStr("Hello World!", 20)
+	lb.insert("\nfunny\n", 6)
+
+	e := lineBuffer{
+		lengths: []int{7, 6, 0, 0, 0, 0, 0, 0, 3, 7},
+		start:   2,
+		end:     8,
+	}
+
+	assert.Equal(t, e, *lb)
 }
 
 var insertTests = []struct { //nolint:gochecknoglobals,dupl // not a global, not a duplicate
@@ -237,7 +254,7 @@ func TestGapBufferInsert(t *testing.T) {
 			t.Parallel()
 			gb := NewStrCap(tStrct.initialText, tStrct.capacity)
 			gb.Insert(tStrct.insertText)
-			assert.Equal(t, tStrct.expectedStruct, *gb, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gb)
 		})
 	}
 }
@@ -349,7 +366,7 @@ func TestGapBufferMvLeftInsert(t *testing.T) {
 			gBuf.LeftMv()
 			gBuf.LeftMv()
 			gBuf.Insert(tStrct.insertText)
-			assert.Equal(t, tStrct.expectedStruct, *gBuf, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gBuf)
 		})
 	}
 }
@@ -428,7 +445,7 @@ func TestGapBufferMvRightInsert(t *testing.T) {
 			gBuf.RightMv()
 			gBuf.RightMv()
 			gBuf.Insert(tStrct.insertText)
-			assert.Equal(t, tStrct.expectedStruct, *gBuf, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gBuf)
 		})
 	}
 }
@@ -483,7 +500,7 @@ func TestGapBufferUpDownEmpty(t *testing.T) {
 			gBuf := NewStrCap(tStrct.initialText, tStrct.capacity)
 			gBuf.UpMv()
 			gBuf.DownMv()
-			assert.Equal(t, tStrct.expectedStruct, *gBuf, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gBuf)
 		})
 	}
 }
@@ -561,7 +578,7 @@ func TestGapBufferUpDownInsert(t *testing.T) {
 			gBuf.Insert(tStrct.insertText)
 			// if g.lines.end > g.lines.lastIdx()
 			gBuf.DownMv()
-			assert.Equal(t, tStrct.expectedStruct, *gBuf, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gBuf)
 		})
 	}
 }
@@ -632,7 +649,7 @@ func TestGapBufferUpDown(t *testing.T) {
 			gBuf := NewStrCap(tStrct.initialText, tStrct.capacity)
 			gBuf.UpMv()
 			gBuf.DownMv()
-			assert.Equal(t, tStrct.expectedStruct, *gBuf, "Error in GapBuffer initialization!")
+			assert.Equal(t, tStrct.expectedStruct, *gBuf)
 		})
 	}
 }

@@ -18,7 +18,7 @@ type lineBuffer struct {
 }
 
 func newLineBuf(c int) *lineBuffer {
-	cR := max(c/lineCapFactor, minLineCap)
+	cR := max(c/lineCapFactor, defaultLineCap)
 	lb := &lineBuffer{start: 0, end: cR, lengths: make([]int, cR)}
 
 	return lb
@@ -103,6 +103,9 @@ func lineLengths(str string) []int {
 
 	for i := range lines {
 		lens = append(lens, len(lines[i])+1)
+	}
+	if strings.HasSuffix(str, "\n") {
+		lens = append(lens, 0)
 	}
 
 	return lens
