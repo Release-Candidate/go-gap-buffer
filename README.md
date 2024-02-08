@@ -3,7 +3,7 @@
 [![golangci-lint](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml)
 [![Test](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Release-Candidate/go-gap-buffer/graph/badge.svg?token=VCMMINZQF9)](https://codecov.io/gh/Release-Candidate/go-gap-buffer)
-![GitHub Release](https://img.shields.io/github/v/release/Release-Candidate/go-gap-buffer)
+[![GitHub Release](https://img.shields.io/github/v/release/Release-Candidate/go-gap-buffer)](https://github.com/Release-Candidate/go-gap-buffer/releases/latest)
 
 A gap buffer implementation in Go.
 
@@ -122,6 +122,8 @@ go run ./example
 ```
 
 ## Version History
+
+The latest release information is a [latest release](https://github.com/Release-Candidate/go-gap-buffer/releases/latest)
 
 See file [./CHANGELOG](./CHANGELOG.md).
 
