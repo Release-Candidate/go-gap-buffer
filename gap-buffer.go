@@ -451,10 +451,6 @@ func (g *GapBuffer) DownMv() {
 	g.start += idx
 	g.end += idx
 
-	if idx == 0 {
-		g.start++
-		g.end++
-	}
 	// if we are at the last line, we can move one step further to the right
 	if g.end == len(g.data)-1 && runeCnt < g.wantsCol {
 		g.data[g.start] = g.data[g.end]

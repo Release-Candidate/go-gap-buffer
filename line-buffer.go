@@ -99,14 +99,6 @@ func (l *lineBuffer) size() int {
 	return len(l.lengths)
 }
 
-// lastIdx returns the index of the element of the lineBuffer.
-//
-// Note: [lineBuffer.end] may have an index one larger than this, if there is
-// nothing (no line) right of the gap.
-func (l *lineBuffer) lastIdx() int {
-	return len(l.lengths) - 1
-}
-
 // up reacts to a movement of the curser up one line.
 //
 // The line length of the current line is set as the length of [lineBuffer.end],
