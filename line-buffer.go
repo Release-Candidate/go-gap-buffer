@@ -12,6 +12,9 @@ package gapbuffer
 import "strings"
 
 // This is a gap buffer which holds the line lengths of the lines in `GapBuffer`.
+//
+// Warning: this data structure does not check it's function arguments, it is
+// only meant to be called by [GapBuffer] if needed and the arguments are valid.
 type lineBuffer struct {
 	// The start of the gap, the index of the current line in `lengths`.
 	//
@@ -106,13 +109,12 @@ func (l *lineBuffer) lastIdx() int {
 
 // up reacts to a movement of the curser up one line.
 //
-// If the cursor is already in the first line, nothing happens. Else, the
-// line length of the current line is set as the length of [lineBuffer.end], and
-// the gap is moved one step to the left.
+// The line length of the current line is set as the length of [lineBuffer.end],
+// and the gap is moved one step to the left.
+//
+// Warning: this function does not check if the cursor is in the first line, if
+// it is, this panics!
 func (l *lineBuffer) up() {
-	if l.start < 1 {
-		return
-	}
 	l.end--
 	l.lengths[l.end] = l.lengths[l.start]
 	l.start--
@@ -120,24 +122,22 @@ func (l *lineBuffer) up() {
 
 // upDel reacts to the deletion of the newline before the cursor.
 //
-// If the cursor is already in the first line, nothing happens. Else, the
-// gap is widened one step to the left.
+// The gap is widened one step to the left.
+//
+// Warning: this function does not check if the cursor is in the first line, if
+// it is, this panics!
 func (l *lineBuffer) upDel() {
-	if l.start < 1 {
-		return
-	}
 	l.start--
 }
 
 // down reacts to a movement of the curser down one line.
 //
-// If the cursor is already in the last line, nothing happens. Else, the
-// line length of the next line - of [lineBuffer.end is set as the length of the
-// current line, and the gap is moved one step to the right.
+// The line length of the next line - of [lineBuffer.end is set as the length of
+// the current line, and the gap is moved one step to the right.
+//
+// Warning: this function does not check if the cursor is in the last line, if
+// it is, this panics!
 func (l *lineBuffer) down() {
-	if l.end > l.lastIdx() {
-		return
-	}
 	l.start++
 	l.lengths[l.start] = l.lengths[l.end]
 	l.end++
@@ -145,12 +145,11 @@ func (l *lineBuffer) down() {
 
 // downDel reacts to the deletion of the newline after the cursor.
 //
-// If the cursor is already in the last line, nothing happens. Else, the gap is
-// widened one step to the right.
+// The gap is widened one step to the right.
+//
+// Warning: this function does not check if the cursor is in the last line, if
+// it is, this panics!
 func (l *lineBuffer) downDel() {
-	if l.end > l.lastIdx() {
-		return
-	}
 	l.end++
 }
 

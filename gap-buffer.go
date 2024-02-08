@@ -9,15 +9,23 @@
 
 // This library implements a gap buffer, which is a data structure to be used as
 // the container of the text for a (simple or not so simple) text editor.
-// A gap buffer is not ideal for using multiple cursors, as that would involve
-// multiple jumps and copying of data in the gap buffer.
 //
-// This gap buffer includes line movements (up and down a line from the current
-// one) but it splits lines based on the newline character '\n'. So
-// Windows-style CR LF (`\r\n`) line endings are not supported.
+// Movements to the left or right and deletion to the left and right work on
+// Unicode runes. It supports line movements (up and down a line from the current
+// one), it splits lines based on the newline character '\n'.
 //
-// A gap buffer is an array with a gap at the cursor position, where text is to
-// be inserted and deleted.
+// Caveats:
+//   - Only line feed '\n' line endings are supported by this library, so
+//     Windows-style CR-LF (`\r\n`) line endings will not work with movements
+//     up and down a line. Single Unicode rune movements are going to work, but
+//     the CR '\r' character is handled as a "normal" character, as part of the
+//     string.
+//   - This implementation is not thread save
+//   - A gap buffer is not ideal for using multiple cursors, as that would
+//     involve multiple jumps and copying of data in the gap buffer
+//
+// A gap buffer is an array with a "gap" - unused elements in the array - at the
+// cursor position, where text is to be inserted and deleted.
 //
 // The string "Hello world!" with the cursor at the end of "Hello" -
 // "Hello| world!" - looks like this in a gap buffer array:
@@ -51,6 +59,10 @@
 //
 //	['N', 'e', 'w', 0, 0, 0, 0, 0, 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!']
 //	  0    1    2   |   gap      |  3    4    5    6    7    8    9    10   11
+//
+// Implementation Detail:
+// The line lengths are stored in a another gap buffer, which is synchronized
+// with the gap buffer of the text itself.
 package gapbuffer
 
 import (
@@ -195,10 +207,6 @@ func (g *GapBuffer) Size() int {
 //
 // See also [GapBuffer.RuneCol], [GapBuffer.LineCol], [GapBuffer.LineRuneCol].
 func (g *GapBuffer) Col() int {
-	if g.start < g.lines.curLineStart() {
-		return 0
-	}
-
 	return g.start - g.lines.curLineStart()
 }
 
@@ -209,10 +217,6 @@ func (g *GapBuffer) Col() int {
 //
 // See also [GapBuffer.Col], [GapBuffer.LineCol], [GapBuffer.LineRuneCol].
 func (g *GapBuffer) RuneCol() int {
-	if g.start < g.lines.curLineStart() {
-		return 0
-	}
-
 	return utf8.RuneCount(g.data[g.lines.curLineStart():g.start])
 }
 
@@ -326,10 +330,6 @@ func (g *GapBuffer) LeftMv() {
 // See also [GapBuffer.LeftMv], [GapBuffer.LeftDel], [GapBuffer.RightDel],
 // [GapBuffer.UpMv], [GapBuffer.DownMv]
 func (g *GapBuffer) RightMv() {
-	if g.start > len(g.data)-2 {
-		return
-	}
-
 	if g.end > len(g.data)-1 {
 		return
 	}

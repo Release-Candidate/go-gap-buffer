@@ -148,3 +148,66 @@ func TestMoveUp(t *testing.T) {
 	assert.Equal(t, "funny\nWorld!", r, "Error, right part isn't 'funny\\nWorld!'!")
 	assert.Equal(t, len(l)+len(r), strLen, "Error checking string length!")
 }
+
+func TestLineLength(t *testing.T) {
+	t.Parallel()
+
+	gb := gapbuffer.NewStr("Hello\nWorld!")
+	gb.UpMv()
+	length := gb.LineLength()
+
+	assert.Equal(t, 5, length, "Error, line length isn't 5!")
+}
+
+func TestLeftDelEverything(t *testing.T) {
+	t.Parallel()
+
+	gb := gapbuffer.NewStr("Hello\nWorld!")
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	gb.LeftDel()
+	empty := gb.String()
+
+	assert.Equal(t, "", empty, "Error, empty gap buffer isn't empty!")
+}
+
+func TestRightDelEverything(t *testing.T) {
+	t.Parallel()
+
+	gb := gapbuffer.NewStr("Hello\nWorld!")
+	gb.UpMv()
+	gb.LeftMv()
+	gb.LeftMv()
+	gb.LeftMv()
+	gb.LeftMv()
+	gb.LeftMv()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	gb.RightDel()
+	empty := gb.String()
+
+	assert.Equal(t, "", empty, "Error, empty gap buffer isn't empty!")
+}
