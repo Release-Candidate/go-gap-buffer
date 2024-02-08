@@ -1,5 +1,8 @@
 # go-gap-buffer
 
+[![golangci-lint](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml)
+[![Test](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml)
+
 A gap buffer implementation in Go.
 
 - [Usage](#usage)
