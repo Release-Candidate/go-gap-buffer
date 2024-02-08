@@ -46,7 +46,7 @@ jobs:
                 import sys
 
                 CHANGELOG_PATH = "./CHANGELOG.md"
-                CHANGELOG_REGEX = r"^(## Version ([0-9.-]+) \S+\n.*?\n)(## )?"
+                CHANGELOG_REGEX = r"^(## Version ([0-9.-]+) \S+\n.*\n)(## )?"
                 OUT_FILE_PATH = "./latest_changelog.md"
 
                 """Main entry point of the script."""
