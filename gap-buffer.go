@@ -425,15 +425,11 @@ func (g *GapBuffer) UpMv() {
 // See also [GapBuffer.UpMv], [GapBuffer.LeftMv], [GapBuffer.RightMv],
 // [GapBuffer.LeftDel], [GapBuffer.RightDel]
 func (g *GapBuffer) DownMv() {
-	if g.lines.end > g.lines.lastIdx() {
+	if g.lines.isLastLine() {
 		return
 	}
 
 	newLine := g.lines.curLineEnd() + 1 - g.start
-	if g.lines.curLineLength() == 0 || g.lines.isLastLine() {
-		newLine--
-	}
-
 	idx := newLine
 	runeCnt := 0
 
