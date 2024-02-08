@@ -148,74 +148,7 @@ var insertTests = []struct { //nolint:gochecknoglobals,dupl // not a global, not
 	capacity       int
 	expectedStruct GapBuffer
 }{
-	{
-		name:        "empty",
-		initialText: "",
-		insertText:  "",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    0,
-			end:      10,
-			wantsCol: 0,
-			data:     []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-			lines: lineBuffer{
-				lengths: []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
-		},
-	},
-	{
-		name:        "hello",
-		initialText: "hello",
-		insertText:  "",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    5,
-			end:      10,
-			wantsCol: 5,
-			data:     []byte{'h', 'e', 'l', 'l', 'o', 0, 0, 0, 0, 0},
-			lines: lineBuffer{
-				lengths: []int{5, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
-		},
-	},
-	{
-		name:        "hello world",
-		initialText: "hello",
-		insertText:  " world!",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    12,
-			end:      20,
-			wantsCol: 12,
-			data:     []byte{'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, 0, 0},
-			lines: lineBuffer{
-				lengths: []int{12, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
-		},
-	},
-	{
-		name:        "newlines",
-		initialText: "h\nel\nlo",
-		insertText:  "\nwo\nld!",
-		capacity:    20,
-		expectedStruct: GapBuffer{
-			start:    14,
-			end:      20,
-			wantsCol: 3,
-			data:     []byte{'h', '\n', 'e', 'l', '\n', 'l', 'o', '\n', 'w', 'o', '\n', 'l', 'd', '!', 0, 0, 0, 0, 0, 0},
-			lines: lineBuffer{
-				lengths: []int{2, 3, 3, 3, 3, 0, 0, 0, 0, 0},
-				start:   4,
-				end:     10,
-			},
-		},
-	},
+
 	{
 		name:        "only newlines",
 		initialText: "h\nel\nlo",
@@ -235,18 +168,64 @@ var insertTests = []struct { //nolint:gochecknoglobals,dupl // not a global, not
 	},
 }
 
-func TestGapBufferInsert(t *testing.T) {
+func TestInsertEmpty(t *testing.T) {
 	t.Parallel()
 
-	for i := range insertTests {
-		tStrct := &insertTests[i]
-		t.Run(tStrct.name, func(t *testing.T) {
-			t.Parallel()
-			gb := NewStrCap(tStrct.initialText, tStrct.capacity)
-			gb.Insert(tStrct.insertText)
-			assert.Equal(t, tStrct.expectedStruct, *gb)
-		})
+	gb := NewStrCap("", 10)
+	gb.Insert("")
+	e := GapBuffer{
+		start:    0,
+		end:      10,
+		wantsCol: 0,
+		data:     []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		lines: lineBuffer{
+			lengths: []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			start:   0,
+			end:     10,
+		},
 	}
+	assert.Equal(t, e, *gb)
+
+}
+
+func TestInsertHelloWorld(t *testing.T) {
+	t.Parallel()
+
+	gb := NewStrCap("hello ", 20)
+	gb.Insert("world!")
+	e := GapBuffer{
+		start:    12,
+		end:      20,
+		wantsCol: 12,
+		data:     []byte{'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, 0, 0},
+		lines: lineBuffer{
+			lengths: []int{13, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			start:   0,
+			end:     10,
+		},
+	}
+	assert.Equal(t, e, *gb)
+
+}
+
+func TestInsertHelloWorldNLs(t *testing.T) {
+	t.Parallel()
+
+	gb := NewStrCap("h\nel\nlo", 20)
+	gb.Insert("\nwo\nld!")
+	e := GapBuffer{
+		start:    14,
+		end:      20,
+		wantsCol: 3,
+		data:     []byte{'h', '\n', 'e', 'l', '\n', 'l', 'o', '\n', 'w', 'o', '\n', 'l', 'd', '!', 0, 0, 0, 0, 0, 0},
+		lines: lineBuffer{
+			lengths: []int{2, 3, 3, 3, 3, 0, 0, 0, 0, 0},
+			start:   4,
+			end:     10,
+		},
+	}
+	assert.Equal(t, e, *gb)
+
 }
 
 var insertMvLeftTests = []struct { //nolint:gochecknoglobals,dupl // not a global, not duplicates

@@ -151,6 +151,9 @@ func New() *GapBuffer {
 //
 // See also [New], [NewCap], [NewStr], [GapBuffer.Size].
 func NewStrCap(s string, c int) *GapBuffer {
+	if len(s) == 0 {
+		return NewCap(c)
+	}
 	size := max(c, len(s)*growFactor)
 	dat := make([]byte, size)
 	sIdx := copy(dat, s)
@@ -487,8 +490,8 @@ func (g *GapBuffer) Insert(str string) {
 	if g.end-g.start < len(str)+1 {
 		g.grow()
 	}
-
-	g.lines.insert(str, g.start)
+	// -1 because the cursor is after the end of the current string
+	g.lines.insert(str, g.start-1)
 	l := copy(g.data[g.start:], str)
 	g.start += l
 	g.wantsCol = g.RuneCol()
