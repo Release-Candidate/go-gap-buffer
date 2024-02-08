@@ -215,12 +215,15 @@ func (g *GapBuffer) RuneCol() int {
 
 // Return the length of the current line the cursor is in in bytes.
 // This returns the "whole" line length, including the part to the right of the
-// cursor.
+// cursor but without the newline character at the end of the line.
 //
 // See also [GapBuffer.Col], [GapBuffer.RuneCol], which is the the length to the
 // left of the cursor.
 func (g *GapBuffer) LineLength() int {
-	return g.lines.curLineLength() + 1
+	if g.lines.isLastLine() {
+		return g.lines.curLineLength()
+	}
+	return g.lines.curLineLength() - 1
 }
 
 // Return the line number of the current line the cursor is in.

@@ -76,13 +76,13 @@ func (l *lineBuffer) insert(str string, pos int) {
 	}
 
 	lens := lineLengths(str)
-	relPos := pos - l.curLineStart()
-	lens[0] += relPos
-
-	lens[len(lens)-1] += l.curLineEnd() - pos
-
 	if l.end-l.start < len(lens)+1 {
 		l.grow()
+	}
+	if pos == l.curLineStart() {
+		lens[len(lens)-1] += l.curLineLength()
+	} else {
+		lens[0] += pos - l.curLineStart() + 1
 	}
 
 	for idx := range lens {
@@ -187,10 +187,6 @@ func newlineSplit(str string) []string {
 		lines = append(lines, line)
 	}
 
-	if rest == "" && line == "" {
-		lines = append(lines, "")
-	}
-
 	return lines
 }
 
@@ -214,6 +210,8 @@ func lineLengths(str string) []int {
 	}
 	if strings.HasSuffix(str, "\n") {
 		lens = append(lens, 0)
+	} else {
+		lens[len(lens)-1]--
 	}
 
 	return lens
@@ -223,7 +221,7 @@ func lineLengths(str string) []int {
 // copies the existing data.
 func (l *lineBuffer) grow() {
 	tmp := make([]int, growFactor*l.size())
-	_ = copy(tmp, l.lengths[:l.start])
+	_ = copy(tmp, l.lengths[:l.start+1])
 	nE := len(tmp) - (l.size() - l.end)
 	_ = copy(tmp[nE:], l.lengths[l.end:])
 	l.end = nE
@@ -246,6 +244,21 @@ func (l *lineBuffer) isLastLine() bool {
 	return l.end == l.size()
 }
 
+// curLineStart returns the index in the gap buffer of the first character in
+// the current line. This is the sum of all line length before the current line.
+func (l *lineBuffer) curLineStart() int {
+	if l.start == 0 {
+		return 0
+	}
+
+	sum := 0
+	for i := range l.lengths[:l.start] {
+		sum += l.lengths[i]
+	}
+
+	return sum
+}
+
 // curLineEnd returns the index in the gap buffer of the last character in the
 // current line, including the newline character. This is the sum of all
 // line lengths before the current line and the length of the current line minus
@@ -263,19 +276,4 @@ func (l *lineBuffer) curLineEnd() int {
 
 	// returns the index of the last character, so subtract one.
 	return sum - 1
-}
-
-// curLineStart returns the index in the gap buffer of the first character in
-// the current line. This is the sum of all line length before the current line.
-func (l *lineBuffer) curLineStart() int {
-	if l.start == 0 {
-		return 0
-	}
-
-	sum := 0
-	for i := range l.lengths[:l.start] {
-		sum += l.lengths[i]
-	}
-
-	return sum
 }
