@@ -18,6 +18,8 @@ A gap buffer implementation in Go.
 import gap "https://github.com/Release-Candidate/go-gap-buffer"
 ```
 
+Below is a short example, detailed documentation can be found at [pkg.go.dev](https://pkg.go.dev/github.com/Release-Candidate/go-gap-buffer)
+
 ### Example
 
 ```go
