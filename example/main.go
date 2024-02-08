@@ -65,13 +65,16 @@ func main() {
 	fmt.Printf("%s<|>%s\n", l, r)
 	fmt.Println("================================================================================")
 
-	// Move the cursor up one line.
+	// Move the cursor up two lines.
+	gapBuffer.UpMv()
 	gapBuffer.UpMv()
 	l, r = gapBuffer.StringPair()
 	fmt.Printf("%s<|>%s\n", l, r)
 	fmt.Println("================================================================================")
 
-	// And down two lines.
+	// Two runes to the right and down two lines again.
+	gapBuffer.RightMv()
+	gapBuffer.RightMv()
 	gapBuffer.DownMv()
 	gapBuffer.DownMv()
 	l, r = gapBuffer.StringPair()
