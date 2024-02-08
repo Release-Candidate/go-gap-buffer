@@ -46,7 +46,7 @@ jobs:
                 import sys
 
                 CHANGELOG_PATH = "./CHANGELOG.md"
-                CHANGELOG_REGEX = r"^(## Version (\S+) \S+\n.*?\n)## "
+                CHANGELOG_REGEX = r"^(## Version ([0-9.-]+) \S+\n.*?\n)(## )?"
                 OUT_FILE_PATH = "./latest_changelog.md"
 
                 """Main entry point of the script."""
@@ -73,7 +73,6 @@ jobs:
               if: startsWith(github.ref, 'refs/tags/')
               with:
                 name: Version ${{ env.GIT_TAG_NAME }}
-                body_path: latest_changelog.md
-                files: ./out/*
+                body_path: ./latest_changelog.md
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
