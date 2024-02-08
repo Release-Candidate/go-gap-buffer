@@ -305,7 +305,7 @@ func TestMvLeftInsertHelloWorldNL(t *testing.T) {
 		wantsCol: 3,
 		data:     []byte{'h', '\n', 'w', 'o', '\n', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, '\n', 'e', 'l', '\n', 'l', 'o'},
 		lines: lineBuffer{
-			lengths: []int{2, 3, 3, 0, 0, 0, 0, 0, 3, 2},
+			lengths: []int{2, 3, 4, 0, 0, 0, 0, 0, 3, 2},
 			start:   2,
 			end:     8,
 		},
@@ -486,10 +486,10 @@ func TestUpDownInsert12NL(t *testing.T) {
 	e := GapBuffer{
 		start:    3,
 		end:      10,
-		wantsCol: 3,
-		data:     []byte{'1', '2', '\n', 0, 0, 0, 0, 0, 0, '\n'},
+		wantsCol: 0,
+		data:     []byte{'1', '2', '\n', 0, 0, 0, 0, '1', '2', '\n'},
 		lines: lineBuffer{
-			lengths: []int{2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			lengths: []int{3, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			start:   1,
 			end:     10,
 		},
@@ -573,10 +573,10 @@ func TestUpDown12NL(t *testing.T) {
 	e := GapBuffer{
 		start:    3,
 		end:      10,
-		wantsCol: 3,
+		wantsCol: 0,
 		data:     []byte{'1', '2', '\n', 0, 0, 0, 0, '1', '2', '\n'},
 		lines: lineBuffer{
-			lengths: []int{3, 0, 0, 0, 0, 0, 0, 0, 0, 3},
+			lengths: []int{3, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			start:   1,
 			end:     10,
 		},
