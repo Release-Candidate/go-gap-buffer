@@ -491,7 +491,7 @@ func (g *GapBuffer) Insert(str string) {
 		g.grow()
 	}
 	// -1 because the cursor is after the end of the current string
-	g.lines.insert(str, g.start-1)
+	g.lines.insert(str, g.start)
 	l := copy(g.data[g.start:], str)
 	g.start += l
 	g.wantsCol = g.RuneCol()

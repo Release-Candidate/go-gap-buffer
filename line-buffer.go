@@ -79,12 +79,9 @@ func (l *lineBuffer) insert(str string, pos int) {
 	if l.end-l.start < len(lens)+1 {
 		l.grow()
 	}
-	if pos == l.curLineStart() {
-		lens[len(lens)-1] += l.curLineLength()
-	} else {
-		lens[0] += pos - l.curLineStart() + 1
-		lens[len(lens)-1] += l.curLineEnd() - pos
-	}
+
+	lens[0] += pos - l.curLineStart()
+	lens[len(lens)-1] += l.curLineStart() + l.curLineLength() - pos
 
 	for idx := range lens {
 		l.lengths[l.start+idx] = lens[idx]
