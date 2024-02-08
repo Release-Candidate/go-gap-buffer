@@ -83,6 +83,7 @@ func (l *lineBuffer) insert(str string, pos int) {
 		lens[len(lens)-1] += l.curLineLength()
 	} else {
 		lens[0] += pos - l.curLineStart() + 1
+		lens[len(lens)-1] += l.curLineEnd() - pos
 	}
 
 	for idx := range lens {

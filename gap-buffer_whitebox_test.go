@@ -228,116 +228,119 @@ func TestInsertHelloWorldNLs(t *testing.T) {
 
 }
 
-var insertMvLeftTests = []struct { //nolint:gochecknoglobals,dupl // not a global, not duplicates
-	name           string
-	initialText    string
-	insertText     string
-	capacity       int
-	expectedStruct GapBuffer
-}{
-	{
-		name:        "empty",
-		initialText: "",
-		insertText:  "",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    0,
-			end:      10,
-			wantsCol: 0,
-			data:     []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-			lines: lineBuffer{
-				lengths: []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
+func TestMvLeftInsertEmpty(t *testing.T) {
+	t.Parallel()
+	gBuf := NewStrCap("", 10)
+	gBuf.UpMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.Insert("")
+
+	e := GapBuffer{
+		start:    0,
+		end:      10,
+		wantsCol: 0,
+		data:     []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		lines: lineBuffer{
+			lengths: []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			start:   0,
+			end:     10,
 		},
-	},
-	{
-		name:        "hello",
-		initialText: "hello",
-		insertText:  "",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    2,
-			end:      7,
-			wantsCol: 2,
-			data:     []byte{'h', 'e', 'l', 'l', 'o', 0, 0, 'l', 'l', 'o'},
-			lines: lineBuffer{
-				lengths: []int{5, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
-		},
-	},
-	{
-		name:        "hello world",
-		initialText: "hello",
-		insertText:  " world!",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    9,
-			end:      17,
-			wantsCol: 9,
-			data:     []byte{'h', 'e', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, 0, 0, 'l', 'l', 'o'},
-			lines: lineBuffer{
-				lengths: []int{12, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-				start:   0,
-				end:     10,
-			},
-		},
-	},
-	{
-		name:        "newlines",
-		initialText: "h\nel\nlo",
-		insertText:  "\nwo\nld!",
-		capacity:    20,
-		expectedStruct: GapBuffer{
-			start:    8,
-			end:      14,
-			wantsCol: 3,
-			data:     []byte{'h', '\n', 'w', 'o', '\n', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, '\n', 'e', 'l', '\n', 'l', 'o'},
-			lines: lineBuffer{
-				lengths: []int{2, 3, 4, 0, 0, 0, 0, 0, 3, 2},
-				start:   2,
-				end:     8,
-			},
-		},
-	},
-	{
-		name:        "only newlines",
-		initialText: "h\nel\nlo",
-		insertText:  "\n\n\n\n\n",
-		capacity:    20,
-		expectedStruct: GapBuffer{
-			start:    6,
-			end:      14,
-			wantsCol: 0,
-			data:     []byte{'h', '\n', '\n', '\n', '\n', '\n', 'o', 0, 0, 0, 0, 0, 0, 0, '\n', 'e', 'l', '\n', 'l', 'o'},
-			lines: lineBuffer{
-				lengths: []int{2, 1, 1, 1, 1, 1, 0, 0, 3, 2},
-				start:   5,
-				end:     8,
-			},
-		},
-	},
+	}
+	assert.Equal(t, e, *gBuf)
 }
 
-func TestGapBufferMvLeftInsert(t *testing.T) {
+func TestMvLeftInsertHello(t *testing.T) {
 	t.Parallel()
+	gBuf := NewStrCap("hello", 10)
+	gBuf.UpMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.Insert("")
 
-	for i := range insertMvLeftTests {
-		tStrct := &insertMvLeftTests[i]
-		t.Run(tStrct.name, func(t *testing.T) {
-			t.Parallel()
-			gBuf := NewStrCap(tStrct.initialText, tStrct.capacity)
-			gBuf.UpMv()
-			gBuf.LeftMv()
-			gBuf.LeftMv()
-			gBuf.LeftMv()
-			gBuf.Insert(tStrct.insertText)
-			assert.Equal(t, tStrct.expectedStruct, *gBuf)
-		})
+	e := GapBuffer{
+		start:    2,
+		end:      7,
+		wantsCol: 2,
+		data:     []byte{'h', 'e', 'l', 'l', 'o', 0, 0, 'l', 'l', 'o'},
+		lines: lineBuffer{
+			lengths: []int{5, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			start:   0,
+			end:     10,
+		},
 	}
+	assert.Equal(t, e, *gBuf)
+}
+
+func TestMvLeftInsertHelloWorld(t *testing.T) {
+	t.Parallel()
+	gBuf := NewStrCap("hello", 10)
+	gBuf.UpMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.Insert(" world!")
+
+	e := GapBuffer{
+		start:    9,
+		end:      17,
+		wantsCol: 9,
+		data:     []byte{'h', 'e', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, 0, 0, 'l', 'l', 'o'},
+		lines: lineBuffer{
+			lengths: []int{12, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			start:   0,
+			end:     10,
+		},
+	}
+	assert.Equal(t, e, *gBuf)
+}
+
+func TestMvLeftInsertHelloWorldNL(t *testing.T) {
+	t.Parallel()
+	gBuf := NewStrCap("h\nel\nlo", 20)
+	gBuf.UpMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.Insert("\nwo\nld!")
+
+	e := GapBuffer{
+		start:    8,
+		end:      14,
+		wantsCol: 3,
+		data:     []byte{'h', '\n', 'w', 'o', '\n', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, '\n', 'e', 'l', '\n', 'l', 'o'},
+		lines: lineBuffer{
+			lengths: []int{2, 3, 3, 0, 0, 0, 0, 0, 3, 2},
+			start:   2,
+			end:     8,
+		},
+	}
+	assert.Equal(t, e, *gBuf)
+}
+
+func TestMvLeftInsertHelloNL(t *testing.T) {
+	t.Parallel()
+	gBuf := NewStrCap("h\nel\nlo", 20)
+	gBuf.UpMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.LeftMv()
+	gBuf.Insert("\n\n\n\n\n")
+
+	e := GapBuffer{
+		start:    6,
+		end:      14,
+		wantsCol: 0,
+		data:     []byte{'h', '\n', '\n', '\n', '\n', '\n', 'o', 0, 0, 0, 0, 0, 0, 0, '\n', 'e', 'l', '\n', 'l', 'o'},
+		lines: lineBuffer{
+			lengths: []int{2, 1, 1, 1, 1, 1, 0, 0, 3, 2},
+			start:   5,
+			end:     8,
+		},
+	}
+	assert.Equal(t, e, *gBuf)
 }
 
 var insertMvRightTests = []struct { //nolint:gochecknoglobals // not a global
