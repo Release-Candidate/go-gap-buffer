@@ -1,5 +1,11 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+# SPDX-FileCopyrightText:  Copyright 2024 Roland Csaszar
+# SPDX-License-Identifier: MIT
+#
+# Project:  go-gap-buffer
+# File:     test.yml
+# Date:     08.Feb.2024
+#
+# ==============================================================================
 
 name: Test
 
@@ -10,16 +16,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-
-  build:
-    runs-on: ubuntu-latest
+  coverage:
+    strategy:
+      matrix:
+        go: ['1.21']
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    name: Tests ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.21.6'
 
-    - name: Test
-      run: go test -v ./...
+    - name: Run tests with coverage
+      run: go test -coverprofile=coverage.txt -covermode=atomic
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4-beta
