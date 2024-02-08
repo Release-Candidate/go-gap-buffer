@@ -451,7 +451,6 @@ func (g *GapBuffer) DownMv() {
 		runeCnt++
 	}
 
-	// runtime error: slice bounds out of range [1014:1013]
 	_ = copy(g.data[g.start:], g.data[g.end:g.end+idx])
 	g.start += idx
 	g.end += idx
@@ -490,7 +489,6 @@ func (g *GapBuffer) Insert(str string) {
 	if g.end-g.start < len(str)+1 {
 		g.grow()
 	}
-	// -1 because the cursor is after the end of the current string
 	g.lines.insert(str, g.start)
 	l := copy(g.data[g.start:], str)
 	g.start += l
