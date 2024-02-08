@@ -199,7 +199,7 @@ func TestInsertHelloWorld(t *testing.T) {
 		wantsCol: 12,
 		data:     []byte{'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0, 0, 0, 0, 0, 0, 0, 0},
 		lines: lineBuffer{
-			lengths: []int{13, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			lengths: []int{12, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			start:   0,
 			end:     10,
 		},
