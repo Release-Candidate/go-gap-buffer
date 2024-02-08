@@ -519,30 +519,6 @@ func TestUpDownInsert11NL(t *testing.T) {
 	assert.Equal(t, e, *gBuf)
 }
 
-var upDownTests = []struct { //nolint:gochecknoglobals // not a global
-	name           string
-	initialText    string
-	capacity       int
-	expectedStruct GapBuffer
-}{
-	{
-		name:        "up and down 2",
-		initialText: "1\n1",
-		capacity:    10,
-		expectedStruct: GapBuffer{
-			start:    3,
-			end:      10,
-			wantsCol: 1,
-			data:     []byte{'1', '\n', '1', 0, 0, 0, 0, 0, '\n', '1'},
-			lines: lineBuffer{
-				lengths: []int{2, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-				start:   1,
-				end:     10,
-			},
-		},
-	},
-}
-
 func TestUpDownNL1(t *testing.T) {
 	t.Parallel()
 	gBuf := NewStrCap("\n1", 10)
