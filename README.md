@@ -8,6 +8,7 @@ A gap buffer implementation in Go.
 
 - [Usage](#usage)
   - [Example](#example)
+- [Version History](#version-history)
 - [License](#license)
 
 ## Usage
@@ -118,6 +119,10 @@ To run it, use
 ```shell
 go run ./example
 ```
+
+## Version History
+
+See file [./CHANGELOG](./CHANGELOG.md).
 
 ## License
 

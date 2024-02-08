@@ -1,0 +1,79 @@
+# SPDX-FileCopyrightText:  Copyright 2024 Roland Csaszar
+# SPDX-License-Identifier: MIT
+#
+# Project:  go-gap-buffer
+# File:     release.yml
+# Date:     08.Feb.2024
+#
+# ==============================================================================
+
+
+name: Release
+
+on:
+    release:
+        types: [created]
+
+    push:
+        tags:
+            - "v*.*.*"
+
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+
+jobs:
+    package:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Get Tag
+              uses: olegtarasov/get-tag@v2.1.2
+              id: tagName
+              with:
+                  tagRegex: "v(.*)"
+
+            - name: Generate Changelog
+              shell: python
+              run: |
+                import re
+                import sys
+
+                CHANGELOG_PATH = "./CHANGELOG.md"
+                CHANGELOG_REGEX = r"^(## Version (\S+) \S+\n.*?\n)## "
+                OUT_FILE_PATH = "./latest_changelog.md"
+
+                """Main entry point of the script."""
+                with open(
+                    CHANGELOG_PATH,
+                    mode="r",
+                    encoding="UTF-8",
+                ) as changelog:
+                    match = re.search(
+                        CHANGELOG_REGEX,
+                        string=changelog.read(),
+                        flags=re.UNICODE | re.MULTILINE | re.DOTALL,
+                    )
+                    if match:
+                        version = match.group(2)
+                        arg_version = "${{ env.GIT_TAG_NAME }}"
+                        if version != arg_version:
+                            exit(1)
+                        with open(OUT_FILE_PATH, mode="wt", encoding="UTF-8") as outfile:
+                            outfile.write(match.group(1))
+
+            - name: Release to GitHub
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                name: Version ${{ env.GIT_TAG_NAME }}
+                body_path: latest_changelog.md
+                files: ./out/*
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
