@@ -96,7 +96,7 @@ func TestLineInsert33532(t *testing.T) {
 		lengths: []int{3, 3, 3, 5, 3, 3, 3, 2, 0, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12", 20)
-	lb.insert("12\n12\n12\n12\n12", 10)
+	lb.insert("12\n12\n12\n12\n12", 11)
 	assert.Equal(t, e, *lb)
 }
 
@@ -109,7 +109,7 @@ func TestLineInsert333353332(t *testing.T) {
 		lengths: []int{3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12", 20)
-	lb.insert("12\n12\n12\n12\n12\n12\n12\n12", 10)
+	lb.insert("12\n12\n12\n12\n12\n12\n12\n12", 11)
 	assert.Equal(t, e, *lb)
 }
 
@@ -122,7 +122,7 @@ func TestLineInsertNewline(t *testing.T) {
 		lengths: []int{3, 3, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
 	lb := newLineBufStr("12\n12", 20)
-	lb.insert("\n", 4)
+	lb.insert("\n", 5)
 	assert.Equal(t, e, *lb)
 }
 
@@ -130,7 +130,7 @@ func TestLineInsertSpecial(t *testing.T) {
 	t.Parallel()
 
 	lb := newLineBufStr("Hello ", 20)
-	lb.insert("\nfunny\n", 5)
+	lb.insert("\nfunny\n", 6)
 
 	e := lineBuffer{
 		lengths: []int{7, 6, 0, 0, 0, 0, 0, 0, 0, 0},
