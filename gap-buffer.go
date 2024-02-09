@@ -110,12 +110,13 @@ const (
 
 // Return the contents of the gap buffer as a string.
 func (g *GapBuffer) String() string {
-	var b strings.Builder
-	b.Grow(len(g.data) - (g.end - g.start))
-	b.Write(g.data[:g.start])
-	b.Write(g.data[g.end:])
+	var builder strings.Builder
 
-	return b.String()
+	builder.Grow(len(g.data) - (g.end - g.start))
+	builder.Write(g.data[:g.start])
+	builder.Write(g.data[g.end:])
+
+	return builder.String()
 }
 
 // Return the contents of the gap buffer as two strings. The part to the left of
@@ -162,14 +163,15 @@ func New() *GapBuffer {
 // you can set the initial size to something more appropriate.
 //
 // See also [New], [NewCap], [NewStr], [GapBuffer.Size].
-func NewStrCap(s string, c int) *GapBuffer {
-	if len(s) == 0 {
+func NewStrCap(str string, c int) *GapBuffer {
+	if str == "" {
 		return NewCap(c)
 	}
-	size := max(c, len(s)*growFactor)
+
+	size := max(c, len(str)*growFactor)
 	dat := make([]byte, size)
-	sIdx := copy(dat, s)
-	lines := newLineBufStr(s, size)
+	sIdx := copy(dat, str)
+	lines := newLineBufStr(str, size)
 	runeCol := 0
 	lineStart := lines.curLineStart()
 
@@ -220,16 +222,17 @@ func (g *GapBuffer) RuneCol() int {
 	return utf8.RuneCount(g.data[g.lines.curLineStart():g.start])
 }
 
-// Return the length of the current line the cursor is in in bytes.
+// Return the length of the current line the cursor is in, in bytes.
 // This returns the "whole" line length, including the part to the right of the
 // cursor but without the newline character at the end of the line.
 //
-// See also [GapBuffer.Col], [GapBuffer.RuneCol], which is the the length to the
+// See also [GapBuffer.Col], [GapBuffer.RuneCol], which is the length to the
 // left of the cursor.
 func (g *GapBuffer) LineLength() int {
 	if g.lines.isLastLine() {
 		return g.lines.curLineLength()
 	}
+
 	return g.lines.curLineLength() - 1
 }
 
@@ -266,19 +269,19 @@ func (g *GapBuffer) LineRuneCol() (line int, runeCol int) {
 // Delete the unicode rune to the left of the cursor. Like the "backspace" key.
 //
 // See also [GapBuffer.RightDel], [GapBuffer.LeftMv], [GapBuffer.RightMv],
-// [GapBuffer.UpMv], [GapBuffer.DownMv]
+// [GapBuffer.UpMv], [GapBuffer.DownMv].
 func (g *GapBuffer) LeftDel() {
 	if g.start < 1 {
 		return
 	}
 
-	r, d := utf8.DecodeLastRune(g.data[:g.start])
-	g.start -= d
+	r, rSize := utf8.DecodeLastRune(g.data[:g.start])
+	g.start -= rSize
 
 	if r == '\n' {
 		g.lines.upDel()
 	} else {
-		g.lines.del(d)
+		g.lines.del(rSize)
 	}
 
 	g.wantsCol = g.RuneCol()
@@ -287,26 +290,26 @@ func (g *GapBuffer) LeftDel() {
 // Delete the unicode rune to the right of the cursor. Like the "delete" key.
 //
 // See also [GapBuffer.LeftDel], [GapBuffer.RightMv], [GapBuffer.LeftMv],
-// [GapBuffer.UpMv], [GapBuffer.DownMv]
+// [GapBuffer.UpMv], [GapBuffer.DownMv].
 func (g *GapBuffer) RightDel() {
 	if g.end > len(g.data)-1 {
 		return
 	}
 
-	r, d := utf8.DecodeRune(g.data[g.end:])
-	g.end += d
+	r, rSize := utf8.DecodeRune(g.data[g.end:])
+	g.end += rSize
 
 	if r == '\n' {
 		g.lines.downDel()
 	} else {
-		g.lines.del(d)
+		g.lines.del(rSize)
 	}
 }
 
 // Move the cursor one unicode rune to the left.
 //
 // See also [GapBuffer.RightMv], [GapBuffer.LeftDel], [GapBuffer.RightDel],
-// [GapBuffer.UpMv], [GapBuffer.DownMv]
+// [GapBuffer.UpMv], [GapBuffer.DownMv].
 func (g *GapBuffer) LeftMv() {
 	if g.start < 1 {
 		return
@@ -328,7 +331,7 @@ func (g *GapBuffer) LeftMv() {
 // Move the cursor one unicode rune to the right.
 //
 // See also [GapBuffer.LeftMv], [GapBuffer.LeftDel], [GapBuffer.RightDel],
-// [GapBuffer.UpMv], [GapBuffer.DownMv]
+// [GapBuffer.UpMv], [GapBuffer.DownMv].
 func (g *GapBuffer) RightMv() {
 	if g.end > len(g.data)-1 {
 		return
@@ -370,7 +373,7 @@ func (g *GapBuffer) RightMv() {
 //	More text
 //
 // See also [GapBuffer.DownMv], [GapBuffer.LeftMv], [GapBuffer.RightMv],
-// [GapBuffer.LeftDel], [GapBuffer.RightDel]
+// [GapBuffer.LeftDel], [GapBuffer.RightDel].
 func (g *GapBuffer) UpMv() {
 	if g.lines.curLine() == 1 {
 		return
@@ -423,7 +426,7 @@ func (g *GapBuffer) UpMv() {
 //	More |text
 //
 // See also [GapBuffer.UpMv], [GapBuffer.LeftMv], [GapBuffer.RightMv],
-// [GapBuffer.LeftDel], [GapBuffer.RightDel]
+// [GapBuffer.LeftDel], [GapBuffer.RightDel].
 func (g *GapBuffer) DownMv() {
 	if g.lines.isLastLine() {
 		return
@@ -481,6 +484,7 @@ func (g *GapBuffer) Insert(str string) {
 	if g.end-g.start < len(str)+1 {
 		g.grow()
 	}
+
 	g.lines.insert(str, g.start)
 	l := copy(g.data[g.start:], str)
 	g.start += l

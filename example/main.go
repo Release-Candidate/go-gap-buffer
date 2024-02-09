@@ -15,7 +15,7 @@ import (
 	gap "github.com/Release-Candidate/go-gap-buffer"
 )
 
-func main() {
+func main() { //nolint:funlen // Yes, it is long.
 	// Create a new, empty gap buffer.
 	gapBuffer := gap.New()
 	// Insert "Hello, World!" at the start of the buffer.
@@ -38,38 +38,38 @@ func main() {
 	gapBuffer.LeftMv()
 	// We can also get the content of the gap buffer as a pair of strings, one
 	// to the left of the "cursor" and one to the right.
-	l, r := gapBuffer.StringPair()
-	fmt.Printf("left: '%s' |cursor| right: '%s'\n", l, r)
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right := gapBuffer.StringPair()
+	fmt.Printf("left: '%s' |cursor| right: '%s'\n", left, right)
+	fmt.Printf("%s<|>%s\n", left, right)
 	fmt.Println("================================================================================")
 
 	// From now on, "<|>" marks the current "cursor" position in the output.
 
 	// Insert a Unicode smiley.
 	gapBuffer.Insert("🙂")
-	l, r = gapBuffer.StringPair()
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right = gapBuffer.StringPair()
+	fmt.Printf("%s<|>%s\n", left, right)
 	fmt.Println("================================================================================")
 
 	// Delete the Unicode smiley with a single `backspace` (delete the Unicode
 	// Rune to the left of the cursor).
 	gapBuffer.LeftDel()
-	l, r = gapBuffer.StringPair()
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right = gapBuffer.StringPair()
+	fmt.Printf("%s<|>%s\n", left, right)
 	fmt.Println("================================================================================")
 
 	// Insert the string "funny" in a line on its own at the current cursor
 	// location.
 	gapBuffer.Insert("\nfunny\n")
-	l, r = gapBuffer.StringPair()
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right = gapBuffer.StringPair()
+	fmt.Printf("%s<|>%s\n", left, right)
 	fmt.Println("================================================================================")
 
 	// Move the cursor up two lines.
 	gapBuffer.UpMv()
 	gapBuffer.UpMv()
-	l, r = gapBuffer.StringPair()
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right = gapBuffer.StringPair()
+	fmt.Printf("%s<|>%s\n", left, right)
 	fmt.Println("================================================================================")
 
 	// Two runes to the right and down two lines again.
@@ -77,6 +77,6 @@ func main() {
 	gapBuffer.RightMv()
 	gapBuffer.DownMv()
 	gapBuffer.DownMv()
-	l, r = gapBuffer.StringPair()
-	fmt.Printf("%s<|>%s\n", l, r)
+	left, right = gapBuffer.StringPair()
+	fmt.Printf("%s<|>%s\n", left, right)
 }

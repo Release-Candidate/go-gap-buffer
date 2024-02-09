@@ -65,88 +65,89 @@ func TestCurLineStartEndAll2s0(t *testing.T) {
 func TestLineNew3332(t *testing.T) {
 	t.Parallel()
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		start:   3,
 		end:     10,
 		lengths: []int{3, 3, 3, 2, 0, 0, 0, 0, 0, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12", 10)
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lb)
 }
 
 func TestLineInsert33310(t *testing.T) {
 	t.Parallel()
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		start:   8,
 		end:     10,
 		lengths: []int{3, 3, 3, 3, 3, 3, 3, 3, 10, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12\n12\n12\n12\n12\n12", 20)
 	lb.insert("34567890", 25)
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lb)
 }
 
 func TestLineInsert33532(t *testing.T) {
 	t.Parallel()
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		start:   7,
 		end:     10,
 		lengths: []int{3, 3, 3, 5, 3, 3, 3, 2, 0, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12", 20)
 	lb.insert("12\n12\n12\n12\n12", 11)
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lb)
 }
 
 func TestLineInsert333353332(t *testing.T) {
 	t.Parallel()
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		start:   10,
 		end:     20,
 		lengths: []int{3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
 	lb := newLineBufStr("12\n12\n12\n12", 20)
 	lb.insert("12\n12\n12\n12\n12\n12\n12\n12", 11)
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lb)
 }
 
 func TestLineInsertNewline(t *testing.T) {
 	t.Parallel()
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		start:   2,
 		end:     10,
 		lengths: []int{3, 3, 0, 0, 0, 0, 0, 0, 0, 0},
 	}
 	lb := newLineBufStr("12\n12", 20)
 	lb.insert("\n", 5)
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lb)
 }
 
 func TestLineInsertSpecial(t *testing.T) {
 	t.Parallel()
 
-	lb := newLineBufStr("Hello ", 20)
-	lb.insert("\nfunny\n", 6)
+	lineBuf := newLineBufStr("Hello ", 20)
+	lineBuf.insert("\nfunny\n", 6)
 
-	e := lineBuffer{
+	exp := lineBuffer{
 		lengths: []int{7, 6, 0, 0, 0, 0, 0, 0, 0, 0},
 		start:   2,
 		end:     10,
 	}
 
-	assert.Equal(t, e, *lb)
+	assert.Equal(t, exp, *lineBuf)
 }
 
 func TestInsertEmpty(t *testing.T) {
 	t.Parallel()
 
-	gb := NewStrCap("", 10)
-	gb.Insert("")
-	e := GapBuffer{
+	gapBuf := NewStrCap("", 10)
+	gapBuf.Insert("")
+
+	exp := GapBuffer{
 		start:    0,
 		end:      10,
 		wantsCol: 0,
@@ -157,16 +158,16 @@ func TestInsertEmpty(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gb)
-
+	assert.Equal(t, exp, *gapBuf)
 }
 
 func TestInsertHelloWorld(t *testing.T) {
 	t.Parallel()
 
-	gb := NewStrCap("hello ", 20)
-	gb.Insert("world!")
-	e := GapBuffer{
+	gapBuf := NewStrCap("hello ", 20)
+	gapBuf.Insert("world!")
+
+	exp := GapBuffer{
 		start:    12,
 		end:      20,
 		wantsCol: 12,
@@ -177,16 +178,16 @@ func TestInsertHelloWorld(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gb)
-
+	assert.Equal(t, exp, *gapBuf)
 }
 
 func TestInsertHelloWorldNLs(t *testing.T) {
 	t.Parallel()
 
-	gb := NewStrCap("h\nel\nlo", 20)
-	gb.Insert("\nwo\nld!")
-	e := GapBuffer{
+	gapBuffer := NewStrCap("h\nel\nlo", 20)
+	gapBuffer.Insert("\nwo\nld!")
+
+	exp := GapBuffer{
 		start:    14,
 		end:      20,
 		wantsCol: 3,
@@ -197,16 +198,16 @@ func TestInsertHelloWorldNLs(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gb)
-
+	assert.Equal(t, exp, *gapBuffer)
 }
 
 func TestInsertHelloNLs(t *testing.T) {
 	t.Parallel()
 
-	gb := NewStrCap("h\nel\nlo", 20)
-	gb.Insert("\n\n\n\n\n")
-	e := GapBuffer{
+	gapBuf := NewStrCap("h\nel\nlo", 20)
+	gapBuf.Insert("\n\n\n\n\n")
+
+	exp := GapBuffer{
 		start:    12,
 		end:      20,
 		wantsCol: 0,
@@ -217,12 +218,12 @@ func TestInsertHelloNLs(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gb)
-
+	assert.Equal(t, exp, *gapBuf)
 }
 
 func TestMvLeftInsertEmpty(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("", 10)
 	gBuf.UpMv()
 	gBuf.LeftMv()
@@ -230,7 +231,7 @@ func TestMvLeftInsertEmpty(t *testing.T) {
 	gBuf.LeftMv()
 	gBuf.Insert("")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    0,
 		end:      10,
 		wantsCol: 0,
@@ -241,11 +242,12 @@ func TestMvLeftInsertEmpty(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvLeftInsertHello(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("hello", 10)
 	gBuf.UpMv()
 	gBuf.LeftMv()
@@ -253,7 +255,7 @@ func TestMvLeftInsertHello(t *testing.T) {
 	gBuf.LeftMv()
 	gBuf.Insert("")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    2,
 		end:      7,
 		wantsCol: 2,
@@ -264,11 +266,12 @@ func TestMvLeftInsertHello(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvLeftInsertHelloWorld(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("hello", 10)
 	gBuf.UpMv()
 	gBuf.LeftMv()
@@ -276,7 +279,7 @@ func TestMvLeftInsertHelloWorld(t *testing.T) {
 	gBuf.LeftMv()
 	gBuf.Insert(" world!")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    9,
 		end:      17,
 		wantsCol: 9,
@@ -287,11 +290,12 @@ func TestMvLeftInsertHelloWorld(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvLeftInsertHelloWorldNL(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("h\nel\nlo", 20)
 	gBuf.UpMv()
 	gBuf.LeftMv()
@@ -299,7 +303,7 @@ func TestMvLeftInsertHelloWorldNL(t *testing.T) {
 	gBuf.LeftMv()
 	gBuf.Insert("\nwo\nld!")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    8,
 		end:      14,
 		wantsCol: 3,
@@ -310,11 +314,12 @@ func TestMvLeftInsertHelloWorldNL(t *testing.T) {
 			end:     8,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvLeftInsertHelloNL(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("h\nel\nlo", 20)
 	gBuf.UpMv()
 	gBuf.LeftMv()
@@ -322,7 +327,7 @@ func TestMvLeftInsertHelloNL(t *testing.T) {
 	gBuf.LeftMv()
 	gBuf.Insert("\n\n\n\n\n")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    6,
 		end:      14,
 		wantsCol: 0,
@@ -333,7 +338,7 @@ func TestMvLeftInsertHelloNL(t *testing.T) {
 			end:     8,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvRightEmpty(t *testing.T) {
@@ -347,7 +352,7 @@ func TestMvRightEmpty(t *testing.T) {
 	gBuf.RightMv()
 	gBuf.Insert("")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    0,
 		end:      10,
 		wantsCol: 0,
@@ -358,7 +363,7 @@ func TestMvRightEmpty(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvRightHelloNL(t *testing.T) {
@@ -372,7 +377,7 @@ func TestMvRightHelloNL(t *testing.T) {
 	gBuf.RightMv()
 	gBuf.Insert("\nwo\nld!")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    11,
 		end:      17,
 		wantsCol: 3,
@@ -383,7 +388,7 @@ func TestMvRightHelloNL(t *testing.T) {
 			end:     9,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestMvRightNL(t *testing.T) {
@@ -397,7 +402,7 @@ func TestMvRightNL(t *testing.T) {
 	gBuf.RightMv()
 	gBuf.Insert("\n\n\n\n\n")
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    9,
 		end:      17,
 		wantsCol: 0,
@@ -408,16 +413,17 @@ func TestMvRightNL(t *testing.T) {
 			end:     9,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownEmpty(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("", 10)
 	gBuf.UpMv()
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    0,
 		end:      10,
 		wantsCol: 0,
@@ -429,16 +435,17 @@ func TestUpDownEmpty(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownNL(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("\n", 10)
 	gBuf.UpMv()
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    1,
 		end:      10,
 		wantsCol: 0,
@@ -450,7 +457,7 @@ func TestUpDownNL(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownInsert12(t *testing.T) {
@@ -461,7 +468,7 @@ func TestUpDownInsert12(t *testing.T) {
 	gBuf.Insert("12")
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    4,
 		end:      10,
 		wantsCol: 2,
@@ -472,7 +479,7 @@ func TestUpDownInsert12(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownInsert12NL(t *testing.T) {
@@ -483,7 +490,7 @@ func TestUpDownInsert12NL(t *testing.T) {
 	gBuf.Insert("")
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    3,
 		end:      10,
 		wantsCol: 0,
@@ -494,7 +501,7 @@ func TestUpDownInsert12NL(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownInsert11NL(t *testing.T) {
@@ -505,7 +512,7 @@ func TestUpDownInsert11NL(t *testing.T) {
 	gBuf.Insert("\n")
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    3,
 		end:      9,
 		wantsCol: 0,
@@ -516,16 +523,17 @@ func TestUpDownInsert11NL(t *testing.T) {
 			end:     10,
 		},
 	}
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDownNL1(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("\n1", 10)
 	gBuf.UpMv()
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    2,
 		end:      10,
 		wantsCol: 1,
@@ -537,16 +545,17 @@ func TestUpDownNL1(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDown12NL(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("12\n", 10)
 	gBuf.UpMv()
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    3,
 		end:      10,
 		wantsCol: 0,
@@ -558,16 +567,17 @@ func TestUpDown12NL(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }
 
 func TestUpDown1NL1(t *testing.T) {
 	t.Parallel()
+
 	gBuf := NewStrCap("1\n1", 10)
 	gBuf.UpMv()
 	gBuf.DownMv()
 
-	e := GapBuffer{
+	exp := GapBuffer{
 		start:    3,
 		end:      10,
 		wantsCol: 1,
@@ -579,5 +589,5 @@ func TestUpDown1NL1(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, e, *gBuf)
+	assert.Equal(t, exp, *gBuf)
 }

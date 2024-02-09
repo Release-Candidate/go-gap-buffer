@@ -7,6 +7,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/Release-Candidate/go-gap-buffer.svg)](https://pkg.go.dev/github.com/Release-Candidate/go-gap-buffer)
 
 A gap buffer implementation in Go.
+![A GIF of interactive gap buffer usage](./interactive.gif)
 
 - [Usage](#usage)
   - [Example](#example)

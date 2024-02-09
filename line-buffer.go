@@ -49,7 +49,7 @@ func newLineBuf(c int) *lineBuffer {
 }
 
 // newLineBuf returns a new line buffer with the line lengths of the given
-// string and the the given capacity of the parent [GapBuffer]. The size is the
+// string and the given capacity of the parent [GapBuffer]. The size is the
 // maximum of the given capacity divided by [lineCapFactor] and [minLineCap].
 func newLineBufStr(s string, c int) *lineBuffer {
 	l := newLineBuf(c)
@@ -70,7 +70,7 @@ func newLineBufStr(s string, c int) *lineBuffer {
 //	\nfoo insert\n newline|< start  end >|bar\n
 //
 // current line length is 12 = 3 + 9 ("foo insert\n"), next line length is
-// 13 = 4 + 9 (" newlinebar\n")
+// 13 = 4 + 9 (" newlinebar\n").
 func (l *lineBuffer) insert(str string, pos int) {
 	strLen := len(str)
 
@@ -199,6 +199,7 @@ func lineLengths(str string) []int {
 	for i := range lines {
 		lens = append(lens, len(lines[i])+1)
 	}
+
 	if strings.HasSuffix(str, "\n") {
 		lens = append(lens, 0)
 	} else {
