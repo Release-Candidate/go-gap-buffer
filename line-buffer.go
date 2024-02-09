@@ -189,6 +189,8 @@ func newlineSplit(str string) []string {
 // Example:
 //
 //	lineLengths("\nfunny\n") == [1, 6, 0]
+//
+// Warning: does not work with empty strings!
 func lineLengths(str string) []int {
 	lines := newlineSplit(str)
 
