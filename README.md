@@ -3,6 +3,8 @@
 [![golangci-lint](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml)
 [![Test](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Release-Candidate/go-gap-buffer/graph/badge.svg?token=VCMMINZQF9)](https://codecov.io/gh/Release-Candidate/go-gap-buffer)
+[![Go Report Badge](https://goreportcard.com/badge/github.com/Release-Candidate/go-gap-buffer)](https://goreportcard.com/report/github.com/Release-Candidate/go-gap-buffer)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b37507d549e3e5b1b0b7/maintainability)](https://codeclimate.com/github/Release-Candidate/go-gap-buffer/maintainability)
 [![GitHub Release](https://img.shields.io/github/v/release/Release-Candidate/go-gap-buffer)](https://github.com/Release-Candidate/go-gap-buffer/releases/latest)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Release-Candidate/go-gap-buffer.svg)](https://pkg.go.dev/github.com/Release-Candidate/go-gap-buffer)
 
