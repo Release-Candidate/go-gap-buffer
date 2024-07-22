@@ -1,3 +1,7 @@
+> [!WARNING]  
+> This repository has been moved to [Codeberg](https://codeberg.org/Release-Candidate/go-gap-buffer).
+> Update your go imports to point to `codeberg.org/Release-Candidate/go-gap-buffer`
+
 # go-gap-buffer
 
 [![golangci-lint](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml/badge.svg)](https://github.com/Release-Candidate/go-gap-buffer/actions/workflows/lint.yml)
